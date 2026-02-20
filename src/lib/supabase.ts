@@ -2,14 +2,16 @@ import { createClient } from '@supabase/supabase-js';
 import { createBrowserClient, createServerClient } from '@supabase/ssr';
 import type { Brand, Product, ProductionBatch, DPPCode, DPPScan } from './supabase-types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 /**
  * Client-Side Supabase Client (Standard)
  */
-export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+export const supabase = (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+    ? createBrowserClient(supabaseUrl, supabaseAnonKey)
+    : null as any;
 
 /**
  * Server-Side Supabase Client (Middleware/Server Components)
@@ -37,7 +39,7 @@ export function createSupabaseServerClient(cookieStore: any) {
  * Service Role Client (Administrative Operations)
  */
 export function getServiceSupabase() {
-    if (!supabaseServiceKey) return supabase;
+    if (!supabaseServiceKey || !process.env.NEXT_PUBLIC_SUPABASE_URL) return supabase;
     return createClient(supabaseUrl, supabaseServiceKey, {
         auth: { autoRefreshToken: false, persistSession: false },
     });

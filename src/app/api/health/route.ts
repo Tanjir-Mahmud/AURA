@@ -5,6 +5,8 @@
 import { NextResponse } from 'next/server';
 import { getSystemHealth, getRecentMessages, getTasks } from '@/agents/orchestrator';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     try {
         const health = getSystemHealth();
