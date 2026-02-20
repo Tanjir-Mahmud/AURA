@@ -5,6 +5,9 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
     try {
+        if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+            console.error('[API Register Brand] CRITICAL: SUPABASE_SERVICE_ROLE_KEY is missing');
+        }
         const body = await req.json();
         const { brandName, email, password, industry } = body;
 

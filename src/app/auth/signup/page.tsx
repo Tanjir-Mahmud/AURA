@@ -43,7 +43,10 @@ export default function SignupPage() {
             router.push('/business');
         } catch (err: any) {
             console.error('[Signup] Error:', err);
-            setError(err.message || 'Registration failed. Please try again.');
+            const friendlyError = err.message || 'Registration failed';
+            setError(friendlyError.includes('API key')
+                ? `${friendlyError} - Please ensure SUPABASE_SERVICE_ROLE_KEY is set in Vercel settings.`
+                : friendlyError);
         } finally {
             setLoading(false);
         }
