@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sanityClient } from '@/lib/sanity';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * MISSION: REGULATORY INTELLIGENCE AGENT
  * This API endpoint protects brands by cross-referencing Sanity product materials 

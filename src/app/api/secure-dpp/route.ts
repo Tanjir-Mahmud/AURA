@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyQrSignature } from '@/lib/crypto';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * MISSION: SECURE REDIRECTOR
  * Logic to prevent database scraping and URL enumeration.

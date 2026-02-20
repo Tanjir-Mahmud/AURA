@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDPPBySerial, recordScan } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
     const serial = req.nextUrl.searchParams.get('serial');
     if (!serial) {

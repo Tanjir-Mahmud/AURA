@@ -9,6 +9,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { runRegulatoryScout } from '@/agents/regulatoryScoutAgent';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
     try {
         console.log('[API Regulatory-Check] Running You.com powered scan for EU 2026 mandates...');
