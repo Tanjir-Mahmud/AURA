@@ -34,7 +34,7 @@ export async function runFitAnalytics(productId: string): Promise<Partial<Intell
         }
 
         // 2. Aggregate Metrics
-        const totalScore = scans.reduce((sum, scan) => sum + (scan.fit_score || 0), 0);
+        const totalScore = scans.reduce((sum: number, scan: any) => sum + (scan.fit_score || 0), 0);
         const averageFitScore = totalScore / scans.length;
         const sampleSize = scans.length;
 
