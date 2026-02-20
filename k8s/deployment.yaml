@@ -1,0 +1,159 @@
+# ─────────────────────────────────────────────────
+# Aura — Linode Kubernetes Engine (LKE) Deployment
+# Namespace + Deployment + Service + Ingress
+# ─────────────────────────────────────────────────
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aura
+  labels:
+    app: aura
+    env: production
+
+---
+# ConfigMap for environment variables
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aura-config
+  namespace: aura
+data:
+  NODE_ENV: "production"
+  NEXT_PUBLIC_APP_URL: "https://aura.yourdomain.com"
+  NEXT_PUBLIC_SANITY_DATASET: "production"
+
+---
+# Secret for API keys (base64 encoded)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aura-secrets
+  namespace: aura
+type: Opaque
+data:
+  SANITY_API_TOKEN: ""         # base64 encoded
+  DEEPGRAM_API_KEY: ""         # base64 encoded
+  FOXIT_CLIENT_ID: ""          # base64 encoded
+  FOXIT_CLIENT_SECRET: ""      # base64 encoded
+  PERFECTCORP_API_KEY: ""      # base64 encoded
+  YOUSEARCH_API_KEY: ""        # base64 encoded
+
+---
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aura-web
+  namespace: aura
+  labels:
+    app: aura
+    component: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aura
+      component: web
+  template:
+    metadata:
+      labels:
+        app: aura
+        component: web
+    spec:
+      containers:
+        - name: aura
+          image: ghcr.io/your-org/aura:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: aura-config
+            - secretRef:
+                name: aura-secrets
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+---
+# Service (LoadBalancer for Akamai/Linode NodeBalancer)
+apiVersion: v1
+kind: Service
+metadata:
+  name: aura-service
+  namespace: aura
+  annotations:
+    service.beta.kubernetes.io/linode-loadbalancer-throttle: "20"
+spec:
+  type: LoadBalancer
+  selector:
+    app: aura
+    component: web
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+    - name: https
+      port: 443
+      targetPort: 3000
+
+---
+# Ingress for Akamai CDN routing
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aura-ingress
+  namespace: aura
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  rules:
+    - host: aura.yourdomain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: aura-service
+                port:
+                  number: 80
+
+---
+# CronJob — Regulatory Scout (daily at 6:00 AM UTC)
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: regulatory-scout
+  namespace: aura
+spec:
+  schedule: "0 6 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: scout
+              image: curlimages/curl:latest
+              command:
+                - /bin/sh
+                - -c
+                - "curl -X GET http://aura-service.aura.svc.cluster.local/api/regulatory-scan"
+          restartPolicy: OnFailure
