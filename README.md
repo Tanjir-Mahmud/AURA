@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AURA: Universal Lifecycle Orchestrator
 
-## Getting Started
+AURA is a next-generation manufacturing intelligence and circularity platform designed to protect brands, empower consumers, and ensure compliance with upcoming EU 2026 ESPR (Ecodesign for Sustainable Products Regulation) mandates.
 
-First, run the development server:
+**Live Demo**: [https://aura-134o-bilg2qf7z-tanjir-mahmuds-projects.vercel.app/](https://aura-134o-bilg2qf7z-tanjir-mahmuds-projects.vercel.app/)
+
+---
+
+## 🚀 Key Features
+
+### 1. Digital Product Passport (DPP)
+AURA generates GS1-compliant Digital Product Passports that store a product's entire lifecycle story—from raw material composition to final recycling.
+
+### 2. Anti-Counterfeiting Engine
+Prevents database scraping and serial enumeration using cryptographically signed QR codes. Every scan is verified against a secure HMAC signature before revealing product data.
+
+### 3. Regulatory Intelligence Scout
+Uses **You.com Research API** to cross-reference product materials with real-time EU legal updates, providing brands with a "Compliance Risk Score" (Low/Medium/High).
+
+### 4. Service Pulse Monitoring
+A real-time health dashboard for the Multi-Agent System (MAS), monitoring the status of 8 core infrastructure pillars (Supabase, Sanity, Foxit, You.com, Perfect Corp, Deepgram, Passport Agent, and Regulatory Scout).
+
+### 5. Circularity & End-of-Life (EOL)
+Triggers non-destructive lifecycle updates. When a product is recycled, AURA updates its status in the Sanity Immutability Layer and generates a legally binding "End-of-Life" certificate via **Foxit**.
+
+### 6. Voice-Powered Manufacturing
+Enables factory floor workers to record material composition and carbon footprint data hands-free using **Deepgram** voice-to-text integration.
+
+---
+
+## 🛠 Tech Stack & APIs
+
+| Service | Purpose |
+| :--- | :--- |
+| **Next.js 16 (Turbopack)** | Full-stack framework with Edge runtime support. |
+| **Supabase** | Authentication, PostgreSQL database, and scan analytics. |
+| **Sanity CMS** | Immutability layer for product lifecycle events and manufacturing data. |
+| **You.com Search** | Real-time regulatory research and ESPR risk assessment. |
+| **Foxit** | Generation of legally binding PDF Passports and EOL Certificates. |
+| **Perfect Corp** | Consumer Fit Satisfaction & VTO (Virtual Try-On) analytics. |
+| **Deepgram** | Voice-to-text processing for manufacturing floor data entry. |
+| **Tailwind CSS** | Premium, responsive UI/UX for the Admin Dashboard. |
+
+---
+
+## 🏗 System Architecture
+
+AURA follows a **Multi-Agent System (MAS)** architecture:
+- **Orchestrator Agent**: Manages task delegation and system-wide health reporting.
+- **Passport Agent**: Handles SHA-256 hashing and Foxit PDF generation.
+- **Regulatory Scout**: Powers the intelligence layer by scanning legal mandates.
+- **Fit Agent**: Analyzes consumer VTO data to predict return probabilities.
+
+---
+
+## 🔒 Verification & Security
+
+Every product in AURA is protected by:
+- **HMAC-SHA256 Signing**: All QR URLs include a cryptographic signature generated with a secret salt.
+- **Audit Trails**: Sanity's schema enforces read-only fields for verified production data, ensuring legal immutability.
+- **Secure Redirector**: A dedicated gateway verified signatures before exposing sensitive DPP details.
+
+---
+
+## 📦 Getting Started
 
 ```bash
+# Clone the repository
+git clone https://github.com/Tanjir-Mahmud/AURA
+
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*Note: Requires environment variables for Supabase, Sanity, Foxit, and You.com as detailed in `.env.example`.*
