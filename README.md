@@ -3,6 +3,9 @@
 AURA is a next-generation manufacturing intelligence and circularity platform designed to protect brands, empower consumers, and ensure compliance with upcoming EU 2026 ESPR (Ecodesign for Sustainable Products Regulation) mandates.
 
 **Live Demo**: https://aura-134o.vercel.app/
+**Admin Email and Password**
+Email: tansri011@gmail.com
+Password: tansri011@
 
 ---
 
